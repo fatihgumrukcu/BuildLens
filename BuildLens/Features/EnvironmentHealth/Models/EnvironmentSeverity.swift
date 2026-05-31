@@ -1,7 +1,7 @@
 import Foundation
 
 // Ordered worst-first so sorted { $0.severity > $1.severity } puts critical at the top.
-enum EnvironmentSeverity: Int, Comparable, Hashable, Sendable {
+enum EnvironmentSeverity: Int, Comparable, Hashable, Codable, Sendable {
     case healthy  = 0
     case warning  = 1
     case critical = 2

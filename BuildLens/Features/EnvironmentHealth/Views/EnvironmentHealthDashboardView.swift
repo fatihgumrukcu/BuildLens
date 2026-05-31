@@ -38,7 +38,7 @@ struct EnvironmentHealthDashboardView: View {
                         HealthRecommendationView(recommendations: report.recommendations)
                     }
 
-                    HealthTrendPlaceholderView()
+                    HealthTrendView(refreshID: report.generatedAt)
                 }
                 .padding(AppSpacing.contentPadding)
             }

@@ -63,6 +63,7 @@ final class EnvironmentHealthViewModel {
         loadState = .loading
         let report = await service.generateReport()
         loadState = .loaded(report)
+        HealthHistoryService.append(score: report.overallScore, status: report.status)
     }
 
     func refresh() async {
@@ -71,6 +72,7 @@ final class EnvironmentHealthViewModel {
         defer { isRescanning = false }
         let report = await service.generateReport()
         loadState = .loaded(report)
+        HealthHistoryService.append(score: report.overallScore, status: report.status)
     }
 }
 
