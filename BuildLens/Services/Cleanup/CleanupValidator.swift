@@ -72,13 +72,25 @@ struct CleanupValidator: Sendable {
         guard path != "/" else { throw ValidationError.rootPath }
         guard path.count > 20 else { throw ValidationError.pathTooShort }
 
-        // Normalise so prefix matching works for both "foo/bar" and "foo/bar/"
-        let normalised = path.hasSuffix("/") ? path : path + "/"
-        let isAllowed = Self.allowedPrefixes.contains { normalised.hasPrefix($0) }
-        guard isAllowed else { throw ValidationError.notUnderAllowedPrefix(path) }
-
         guard !Self.blockedExact.contains(path) else {
             throw ValidationError.blockedRootDirectory(path)
         }
+
+        // Android project build outputs are allowed anywhere under the home dir,
+        // provided the path contains the known build subfolder markers.
+        if Self.isAndroidBuildOutput(path) { return }
+
+        // Standard developer cache allowlist
+        let normalised = path.hasSuffix("/") ? path : path + "/"
+        guard Self.allowedPrefixes.contains(where: { normalised.hasPrefix($0) }) else {
+            throw ValidationError.notUnderAllowedPrefix(path)
+        }
+    }
+
+    // Path must be under home and contain a known Android build output subfolder.
+    private static func isAndroidBuildOutput(_ path: String) -> Bool {
+        guard path.hasPrefix(NSHomeDirectory()), path.count > 40 else { return false }
+        let markers = ["/android/app/build/outputs", "/android/app/build/intermediates"]
+        return markers.contains { path.contains($0) }
     }
 }

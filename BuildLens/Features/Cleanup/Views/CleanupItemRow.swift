@@ -18,33 +18,52 @@ struct CleanupItemRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.name)
                     .font(.appBody)
-                    .foregroundStyle(Color.textPrimary)
+                    .foregroundStyle(item.isSelected ? Color.textPrimary : Color.textSecondary)
                     .lineLimit(1)
 
-                if !item.detail.isEmpty {
-                    Text(item.detail)
-                        .font(.appFootnote)
-                        .foregroundStyle(Color.textTertiary)
-                        .lineLimit(1)
-                } else {
+                HStack(spacing: AppSpacing.xs) {
+                    if !item.detail.isEmpty {
+                        Text(item.detail)
+                            .foregroundStyle(Color.textTertiary)
+                    }
                     Text(item.url.path.abbreviatedPath)
-                        .font(.appFootnote)
                         .foregroundStyle(Color.textTertiary)
+                        .truncationMode(.middle)
                         .lineLimit(1)
                 }
+                .font(.appFootnote)
             }
 
             Spacer()
 
             RiskLevelBadge(level: item.riskLevel)
+                .help(item.riskLevel.detail)
 
             Text(item.size.formattedBytes)
                 .font(.appCallout.monospacedDigit())
                 .foregroundStyle(Color.textSecondary)
                 .frame(minWidth: 64, alignment: .trailing)
         }
-        .padding(.vertical, AppSpacing.xxs)
+        .padding(.vertical, AppSpacing.xs)
         .contentShape(Rectangle())
         .onTapGesture { onToggle() }
+        .contextMenu {
+            Button {
+                NSWorkspace.shared.activateFileViewerSelecting([item.url])
+            } label: {
+                Label("Reveal in Finder", systemImage: "folder")
+            }
+
+            Divider()
+
+            Button {
+                onToggle()
+            } label: {
+                Label(
+                    item.isSelected ? "Deselect" : "Select for Cleanup",
+                    systemImage: item.isSelected ? "minus.square" : "checkmark.square"
+                )
+            }
+        }
     }
 }

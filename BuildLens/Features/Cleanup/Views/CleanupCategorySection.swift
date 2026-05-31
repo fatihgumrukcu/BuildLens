@@ -17,7 +17,7 @@ struct CleanupCategorySection: View {
             HStack(spacing: AppSpacing.sm) {
                 Image(systemName: category.systemImage)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(Color.textSecondary)
+                    .foregroundStyle(riskColor)
                     .frame(width: 18)
 
                 Text(category.rawValue)
@@ -25,6 +25,7 @@ struct CleanupCategorySection: View {
                     .foregroundStyle(Color.textPrimary)
 
                 RiskLevelBadge(level: category.riskLevel)
+                    .help(category.riskLevel.detail)
 
                 Spacer()
 
@@ -41,17 +42,24 @@ struct CleanupCategorySection: View {
             }
             .padding(.horizontal, AppSpacing.cardPadding)
             .padding(.top, AppSpacing.cardPadding)
-            .padding(.bottom, AppSpacing.sm)
+            .padding(.bottom, AppSpacing.xs)
 
-            // Hint text
-            Text(category.hint)
-                .font(.appFootnote)
-                .foregroundStyle(Color.textTertiary)
-                .padding(.horizontal, AppSpacing.cardPadding)
-                .padding(.bottom, AppSpacing.sm)
+            // Hint box — coloured by risk level so the consequence is immediately obvious
+            HStack(spacing: AppSpacing.xs) {
+                Image(systemName: riskIcon)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(riskColor)
+                Text(category.hint)
+                    .font(.appFootnote)
+                    .foregroundStyle(riskColor.opacity(0.85))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.horizontal, AppSpacing.cardPadding)
+            .padding(.vertical, AppSpacing.xs)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(riskColor.opacity(0.07), in: Rectangle())
 
             Divider()
-                .padding(.horizontal, AppSpacing.cardPadding)
 
             // Item list
             VStack(spacing: 0) {
@@ -71,5 +79,21 @@ struct CleanupCategorySection: View {
             .padding(.bottom, AppSpacing.xs)
         }
         .cardStyle()
+    }
+
+    private var riskColor: Color {
+        switch category.riskLevel {
+        case .safe:     return .statusHealthy
+        case .moderate: return .statusWarning
+        case .caution:  return .statusError
+        }
+    }
+
+    private var riskIcon: String {
+        switch category.riskLevel {
+        case .safe:     return "checkmark.circle"
+        case .moderate: return "exclamationmark.circle"
+        case .caution:  return "exclamationmark.triangle"
+        }
     }
 }
