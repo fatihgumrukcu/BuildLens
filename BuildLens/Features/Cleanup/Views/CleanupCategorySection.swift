@@ -39,6 +39,18 @@ struct CleanupCategorySection: View {
                 .buttonStyle(.borderless)
                 .font(.appFootnote)
                 .foregroundStyle(Color.accentColor)
+
+                if let url = category.rootURL {
+                    Button {
+                        NSWorkspace.shared.open(url)
+                    } label: {
+                        Image(systemName: "folder")
+                    }
+                    .buttonStyle(.borderless)
+                    .font(.appFootnote)
+                    .foregroundStyle(Color.textSecondary)
+                    .help("Open in Finder")
+                }
             }
             .padding(.horizontal, AppSpacing.cardPadding)
             .padding(.top, AppSpacing.cardPadding)

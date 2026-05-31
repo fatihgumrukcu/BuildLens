@@ -17,16 +17,19 @@ final class CleanupService: CleanupServiceProtocol, Sendable {
     }
 
     func buildPreview() async throws -> CleanupPreview {
-        async let derivedData    = scanDerivedData()
-        async let simulators     = scanSimulators()
-        async let archives       = scanArchives()
-        async let androidOutputs = scanAndroidBuildOutputs()
-        async let cocoapods      = scanSingle(path: FileSystemService.cocoapodsCachePath, category: .cocoapods, name: "CocoaPods Cache")
-        async let metro          = scanSingle(path: FileSystemService.metroCachePath,     category: .metroCache, name: "Metro Cache")
-        async let gradle         = scanSingle(path: FileSystemService.gradleCachePath,    category: .gradleCache, name: "Gradle Caches")
-        async let watchman       = scanSingle(path: FileSystemService.watchmanCachePath,  category: .watchman,   name: "Watchman State")
+        async let derivedData      = scanDerivedData()
+        async let simulators       = scanSimulators()
+        async let archives         = scanArchives()
+        async let androidOutputs   = scanAndroidBuildOutputs()
+        async let iosDeviceSupport = scanSubdirs(path: FileSystemService.iosDeviceSupportPath, category: .iosDeviceSupport, riskLevel: .moderate, isSelectedByDefault: false)
+        async let appLogs          = scanSubdirs(path: FileSystemService.appLogsPath,          category: .appLogs,          riskLevel: .safe)
+        async let crashReports     = scanSubdirs(path: FileSystemService.crashReportsPath,     category: .crashReports,     riskLevel: .safe)
+        async let cocoapods        = scanSingle(path: FileSystemService.cocoapodsCachePath, category: .cocoapods, name: "CocoaPods Cache")
+        async let metro            = scanSingle(path: FileSystemService.metroCachePath,     category: .metroCache, name: "Metro Cache")
+        async let gradle           = scanSingle(path: FileSystemService.gradleCachePath,    category: .gradleCache, name: "Gradle Caches")
+        async let watchman         = scanSingle(path: FileSystemService.watchmanCachePath,  category: .watchman,   name: "Watchman State")
 
-        let all = try await derivedData + simulators + archives + androidOutputs + cocoapods + metro + gradle + watchman
+        let all = try await derivedData + simulators + archives + androidOutputs + iosDeviceSupport + appLogs + crashReports + cocoapods + metro + gradle + watchman
         return CleanupPreview(items: all, scannedAt: Date())
     }
 
@@ -116,6 +119,28 @@ final class CleanupService: CleanupServiceProtocol, Sendable {
             results.append(contentsOf: items)
         }
         return results
+    }
+
+    // Generic scanner: each subdirectory becomes one CleanupItem. Errors return empty.
+    private func scanSubdirs(
+        path: String,
+        category: CleanupCategory,
+        riskLevel: CleanupRiskLevel,
+        isSelectedByDefault: Bool = true
+    ) async -> [CleanupItem] {
+        guard let dirs = try? await fileSystem.scanDirectory(at: path) else { return [] }
+        return dirs
+            .filter { $0.size > 0 }
+            .map { dir in
+                CleanupItem(
+                    category: category,
+                    url: dir.url,
+                    name: dir.name,
+                    size: dir.size,
+                    riskLevel: riskLevel,
+                    isSelected: isSelectedByDefault
+                )
+            }
     }
 
     private func scanSingle(path: String, category: CleanupCategory, name: String) async -> [CleanupItem] {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CleanupSummaryHeader: View {
     let preview: CleanupPreview
+    let isRescanning: Bool
     let onRescan: () -> Void
     let onClean: () -> Void
 
@@ -20,8 +21,15 @@ struct CleanupSummaryHeader: View {
 
                 Spacer()
 
-                Button("Rescan", action: onRescan)
-                    .buttonStyle(.bordered)
+                Button(action: onRescan) {
+                    if isRescanning {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        Text("Rescan")
+                    }
+                }
+                .buttonStyle(.bordered)
+                .disabled(isRescanning)
 
                 Button(action: onClean) {
                     if preview.selectedCount > 0 {

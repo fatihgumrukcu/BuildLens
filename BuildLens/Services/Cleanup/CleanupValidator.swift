@@ -9,11 +9,13 @@ struct CleanupValidator: Sendable {
         "\(NSHomeDirectory())/Library/Developer/CoreSimulator/Devices/",
         "\(NSHomeDirectory())/Library/Developer/CoreSimulator/Runtimes/",
         "\(NSHomeDirectory())/Library/Developer/Xcode/Archives/",
+        "\(NSHomeDirectory())/Library/Developer/Xcode/iOS DeviceSupport/",
         "\(NSHomeDirectory())/Library/Caches/CocoaPods/",
         "\(NSHomeDirectory())/Library/Caches/Metro/",
         "\(NSHomeDirectory())/Library/Caches/com.github.facebook.watchman/",
         "\(NSHomeDirectory())/.gradle/caches/",
         "\(NSHomeDirectory())/.npm/",
+        "\(NSHomeDirectory())/Library/Logs/",
     ]
 
     // Root directories in the allowlist that must never themselves be deleted.
@@ -23,6 +25,7 @@ struct CleanupValidator: Sendable {
         "\(NSHomeDirectory())/Library/Developer",
         "\(NSHomeDirectory())/Library/Developer/Xcode",
         "\(NSHomeDirectory())/Library/Developer/Xcode/DerivedData",
+        "\(NSHomeDirectory())/Library/Developer/Xcode/iOS DeviceSupport",
         "\(NSHomeDirectory())/Library/Developer/CoreSimulator",
         "\(NSHomeDirectory())/Library/Developer/CoreSimulator/Devices",
         "\(NSHomeDirectory())/Library/Developer/CoreSimulator/Runtimes",
@@ -34,6 +37,7 @@ struct CleanupValidator: Sendable {
         "\(NSHomeDirectory())/.gradle",
         "\(NSHomeDirectory())/.gradle/caches",
         "\(NSHomeDirectory())/.npm",
+        "\(NSHomeDirectory())/Library/Logs",
         "/",
         "/System",
         "/Library",

@@ -11,6 +11,9 @@ final class FileSystemService: FileSystemServiceProtocol, Sendable {
     static let npmCachePath          = "\(NSHomeDirectory())/.npm"
     static let gradleCachePath        = "\(NSHomeDirectory())/.gradle/caches"
     static let watchmanCachePath      = "\(NSHomeDirectory())/Library/Caches/com.github.facebook.watchman"
+    static let iosDeviceSupportPath   = "\(NSHomeDirectory())/Library/Developer/Xcode/iOS DeviceSupport"
+    static let appLogsPath            = "\(NSHomeDirectory())/Library/Logs"
+    static let crashReportsPath       = "\(NSHomeDirectory())/Library/Logs/DiagnosticReports"
 
     func size(at path: String) async -> Int64 {
         await Task.detached(priority: .utility) {

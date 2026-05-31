@@ -49,6 +49,8 @@ final class CleanupViewModel {
         }
     }
 
+    private(set) var isRescanning = false
+
     // MARK: - Lifecycle
 
     func scan() async {
@@ -62,8 +64,15 @@ final class CleanupViewModel {
     }
 
     func rescan() async {
-        phase = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let preview = try await service.buildPreview()
+            phase = preview.items.isEmpty ? .idle : .preview(preview)
+        } catch {
+            phase = .error(error.localizedDescription)
+        }
     }
 
     // MARK: - Selection

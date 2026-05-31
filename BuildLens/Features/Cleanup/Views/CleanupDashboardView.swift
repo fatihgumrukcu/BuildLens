@@ -8,6 +8,7 @@ struct CleanupDashboardView: View {
         VStack(spacing: 0) {
             CleanupSummaryHeader(
                 preview: preview,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } },
                 onClean: { viewModel.requestConfirmation() }
             )
