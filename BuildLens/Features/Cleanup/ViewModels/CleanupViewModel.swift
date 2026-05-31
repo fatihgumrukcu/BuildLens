@@ -31,8 +31,13 @@ final class CleanupViewModel {
     private(set) var phase: Phase = .idle
     private let service: any CleanupServiceProtocol
 
-    init(service: any CleanupServiceProtocol = CleanupService()) {
+    init(service: any CleanupServiceProtocol) {
         self.service = service
+    }
+
+    @MainActor
+    convenience init() {
+        self.init(service: CleanupService())
     }
 
     // MARK: - Derived State
@@ -117,3 +122,4 @@ final class CleanupViewModel {
         phase = .idle
     }
 }
+

@@ -15,8 +15,13 @@ final class EnvironmentHealthViewModel {
 
     private let service: any EnvironmentHealthServiceProtocol
 
-    init(service: any EnvironmentHealthServiceProtocol = EnvironmentHealthService()) {
+    init(service: any EnvironmentHealthServiceProtocol) {
         self.service = service
+    }
+
+    @MainActor
+    convenience init() {
+        self.init(service: EnvironmentHealthService())
     }
 
     // MARK: - Derived State
@@ -63,3 +68,4 @@ final class EnvironmentHealthViewModel {
         await load()
     }
 }
+

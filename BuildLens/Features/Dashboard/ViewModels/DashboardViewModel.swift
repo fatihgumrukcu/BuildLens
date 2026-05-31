@@ -14,11 +14,16 @@ final class DashboardViewModel {
     private let shell: ShellServiceProtocol
 
     init(
-        fileSystem: FileSystemServiceProtocol = FileSystemService(),
-        shell: ShellServiceProtocol = ShellService()
+        fileSystem: FileSystemServiceProtocol,
+        shell: ShellServiceProtocol
     ) {
         self.fileSystem = fileSystem
         self.shell = shell
+    }
+
+    @MainActor
+    convenience init() {
+        self.init(fileSystem: FileSystemService(), shell: ShellService())
     }
 
     func load() async {

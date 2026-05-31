@@ -57,8 +57,14 @@ final class SimulatorViewModel {
 
     private let service: SimulatorServiceProtocol
 
-    init(service: SimulatorServiceProtocol = SimulatorService()) {
+    // Designated initializer that accepts a service. Kept @MainActor via the enclosing type.
+    init(service: SimulatorServiceProtocol) {
         self.service = service
+    }
+
+    // Convenience initializer that constructs the default service on the main actor safely.
+    convenience init() {
+        self.init(service: SimulatorService())
     }
 
     // MARK: - Actions
@@ -82,3 +88,4 @@ final class SimulatorViewModel {
         await scan()
     }
 }
+

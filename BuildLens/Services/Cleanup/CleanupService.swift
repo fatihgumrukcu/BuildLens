@@ -35,7 +35,7 @@ final class CleanupService: CleanupServiceProtocol, Sendable {
             for item in items {
                 group.addTask {
                     do {
-                        try self.validator.validate(item.url)
+                        try await self.validator.validate(item.url)
                         try FileManager().removeItem(at: item.url)
                         return (item, .success(()))
                     } catch {

@@ -27,8 +27,12 @@ final class WorkspaceViewModel {
 
     private let service: any WorkspaceServiceProtocol
 
-    init(service: any WorkspaceServiceProtocol = WorkspaceService()) {
+    init(service: any WorkspaceServiceProtocol) {
         self.service = service
+    }
+
+    convenience init() {
+        self.init(service: WorkspaceService())
     }
 
     // MARK: - Derived State
@@ -99,3 +103,4 @@ final class WorkspaceViewModel {
         await scan()
     }
 }
+

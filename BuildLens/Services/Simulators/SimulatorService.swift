@@ -13,8 +13,6 @@ final class SimulatorService: SimulatorServiceProtocol, Sendable {
         self.fileSystem = fileSystem
     }
 
-    // MARK: - Public API
-
     func fetchRuntimes() async throws -> [SimulatorRuntime] {
         // Both simctl commands run concurrently — neither waits for the other.
         async let devicesOutput  = shell.run("xcrun simctl list devices --json")
@@ -63,7 +61,7 @@ final class SimulatorService: SimulatorServiceProtocol, Sendable {
                     if size == 0, raw.isAvailable, let dataPath = raw.dataPath {
                         size = await fileSystem.size(at: dataPath)
                     }
-                    return (udid: raw.udid, size: size, lastBootedAt: Self.parseISO8601(raw.lastBootedAt))
+                    return await (udid: raw.udid, size: size, lastBootedAt: Self.parseISO8601(raw.lastBootedAt))
                 }
             }
             var acc: [SizeEntry] = []

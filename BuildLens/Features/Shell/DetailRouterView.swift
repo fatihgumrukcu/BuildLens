@@ -24,6 +24,16 @@ struct DetailRouterView: View {
             NodeModulesView()
         case .metroCache:
             MetroCacheView()
+        case .gradleCache:
+            GradleCacheView()
+        case .xcodeCache:
+            XcodeCenterView()
+        case .archives:
+            ArchivesView()
+        case .buildEnvironment:
+            BuildEnvironmentView()
+        case .diagnostics:
+            DiagnosticsView()
         default:
             PlaceholderFeatureView(destination: destination)
         }

@@ -25,8 +25,13 @@ final class DerivedDataViewModel {
 
     private let fileSystem: FileSystemServiceProtocol
 
-    init(fileSystem: FileSystemServiceProtocol = FileSystemService()) {
+    init(fileSystem: FileSystemServiceProtocol) {
         self.fileSystem = fileSystem
+    }
+
+    @MainActor
+    convenience init() {
+        self.init(fileSystem: FileSystemService())
     }
 
     // MARK: - Actions

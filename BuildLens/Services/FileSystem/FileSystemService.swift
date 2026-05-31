@@ -17,7 +17,7 @@ final class FileSystemService: FileSystemServiceProtocol, Sendable {
             let url = URL(fileURLWithPath: path)
             // Use a local FileManager instance — not .default — for thread safety
             let fm = FileManager()
-            return (try? fm.allocatedSizeOfDirectory(at: url)) ?? 0
+            return await (try? fm.allocatedSizeOfDirectory(at: url)) ?? 0
         }.value
     }
 
@@ -55,7 +55,7 @@ final class FileSystemService: FileSystemServiceProtocol, Sendable {
             for entryURL in subdirectories {
                 group.addTask {
                     let localFm = FileManager()
-                    let size = (try? localFm.allocatedSizeOfDirectory(at: entryURL)) ?? 0
+                    let size = await (try? localFm.allocatedSizeOfDirectory(at: entryURL)) ?? 0
                     let modDate = (try? entryURL
                         .resourceValues(forKeys: [.contentModificationDateKey])
                         .contentModificationDate) ?? Date.distantPast
