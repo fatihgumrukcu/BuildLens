@@ -1,0 +1,15 @@
+import SwiftUI
+
+struct SimulatorLoadingView: View {
+    var body: some View {
+        VStack(spacing: AppSpacing.md) {
+            ProgressView()
+                .controlSize(.large)
+            Text("Scanning simulators\u{2026}")
+                .font(.appCallout)
+                .foregroundStyle(Color.textSecondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.appBackground)
+    }
+}
