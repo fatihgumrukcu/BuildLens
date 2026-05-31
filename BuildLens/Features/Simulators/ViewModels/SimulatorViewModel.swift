@@ -67,6 +67,8 @@ final class SimulatorViewModel {
         self.init(service: SimulatorService())
     }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -83,9 +85,16 @@ final class SimulatorViewModel {
     }
 
     func rescan() async {
-        runtimes = []
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let results = try await service.fetchRuntimes()
+            runtimes = results
+            scanState = results.isEmpty ? .empty : .loaded
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }
 

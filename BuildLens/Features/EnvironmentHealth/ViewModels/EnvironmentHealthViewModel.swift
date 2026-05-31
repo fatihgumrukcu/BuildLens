@@ -54,6 +54,8 @@ final class EnvironmentHealthViewModel {
         )
     }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func load() async {
@@ -64,8 +66,11 @@ final class EnvironmentHealthViewModel {
     }
 
     func refresh() async {
-        loadState = .idle
-        await load()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        let report = await service.generateReport()
+        loadState = .loaded(report)
     }
 }
 

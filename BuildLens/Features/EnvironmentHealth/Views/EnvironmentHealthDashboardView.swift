@@ -8,7 +8,7 @@ struct EnvironmentHealthDashboardView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HealthScoreCard(report: report, onRefresh: { Task { await viewModel.refresh() } })
+            HealthScoreCard(report: report, isRescanning: viewModel.isRescanning, onRefresh: { Task { await viewModel.refresh() } })
             Divider()
 
             ScrollView {

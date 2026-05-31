@@ -8,6 +8,7 @@ struct ArchivesDashboardView: View {
         VStack(spacing: 0) {
             ArchivesSummaryHeader(
                 summary: summary,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } }
             )
             Divider()

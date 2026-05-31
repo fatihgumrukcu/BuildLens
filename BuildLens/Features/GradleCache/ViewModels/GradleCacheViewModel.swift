@@ -62,6 +62,8 @@ final class GradleCacheViewModel {
     var hasIssues: Bool { !(summary?.issues.isEmpty ?? true) }
     var totalEntries: Int { entries.count }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -77,7 +79,15 @@ final class GradleCacheViewModel {
     }
 
     func rescan() async {
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let results = try await service.scanEntries()
+            let summary = GradleCacheSummary.build(from: results)
+            scanState = .loaded(results, summary)
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }

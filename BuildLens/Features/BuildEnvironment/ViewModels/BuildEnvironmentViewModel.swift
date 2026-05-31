@@ -42,6 +42,8 @@ final class BuildEnvironmentViewModel {
         }
     }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -56,7 +58,14 @@ final class BuildEnvironmentViewModel {
     }
 
     func rescan() async {
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let result = try await service.scan()
+            scanState = .loaded(result)
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }

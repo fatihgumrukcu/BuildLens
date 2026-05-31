@@ -9,6 +9,7 @@ struct GradleCacheDashboardView: View {
             GradleCacheSummaryHeader(
                 summary: summary,
                 entryCount: viewModel.totalEntries,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } }
             )
             Divider()

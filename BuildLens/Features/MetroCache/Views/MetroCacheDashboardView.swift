@@ -9,6 +9,7 @@ struct MetroCacheDashboardView: View {
             MetroCacheSummaryHeader(
                 summary: summary,
                 entryCount: viewModel.totalEntries,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } }
             )
             Divider()

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WorkspaceSummaryHeader: View {
     let summary: WorkspaceSummary
+    let isRescanning: Bool
     let onRescan: () -> Void
 
     var body: some View {
@@ -34,9 +35,14 @@ struct WorkspaceSummaryHeader: View {
             Spacer()
 
             Button(action: onRescan) {
-                Label("Rescan", systemImage: "arrow.clockwise")
+                if isRescanning {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Label("Rescan", systemImage: "arrow.clockwise")
+                }
             }
             .buttonStyle(.bordered)
+            .disabled(isRescanning)
         }
         .padding(AppSpacing.contentPadding)
         .background(Color.appBackground)

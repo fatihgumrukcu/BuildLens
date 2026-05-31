@@ -37,9 +37,14 @@ struct SimulatorDashboardView: View {
                 Button {
                     Task { await viewModel.rescan() }
                 } label: {
-                    Label("Rescan", systemImage: "arrow.clockwise")
+                    if viewModel.isRescanning {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        Label("Rescan", systemImage: "arrow.clockwise")
+                    }
                 }
                 .buttonStyle(.bordered)
+                .disabled(viewModel.isRescanning)
             }
 
             SimulatorSummaryCards(summary: viewModel.summary)

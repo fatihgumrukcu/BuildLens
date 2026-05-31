@@ -8,6 +8,7 @@ struct DiagnosticsDashboardView: View {
         VStack(spacing: 0) {
             DiagnosticSummaryHeader(
                 summary: summary,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } }
             )
             Divider()

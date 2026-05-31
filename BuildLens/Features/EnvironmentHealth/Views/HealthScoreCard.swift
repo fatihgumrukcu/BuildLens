@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HealthScoreCard: View {
     let report: EnvironmentHealthReport
+    let isRescanning: Bool
     let onRefresh: () -> Void
 
     var body: some View {
@@ -44,9 +45,14 @@ struct HealthScoreCard: View {
             Spacer()
 
             Button(action: onRefresh) {
-                Label("Refresh", systemImage: "arrow.clockwise")
+                if isRescanning {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
             }
             .buttonStyle(.bordered)
+            .disabled(isRescanning)
         }
         .padding(AppSpacing.contentPadding)
         .background(Color.appBackground)

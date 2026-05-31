@@ -3,6 +3,7 @@ import SwiftUI
 struct DerivedDataSummaryHeader: View {
     let totalSize: Int64
     let itemCount: Int
+    let isRescanning: Bool
     let onRescan: () -> Void
 
     var body: some View {
@@ -24,10 +25,15 @@ struct DerivedDataSummaryHeader: View {
             Spacer()
 
             Button(action: onRescan) {
-                Label("Rescan", systemImage: "arrow.clockwise")
+                if isRescanning {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Label("Rescan", systemImage: "arrow.clockwise")
+                }
             }
             .buttonStyle(.bordered)
             .controlSize(.regular)
+            .disabled(isRescanning)
         }
     }
 }

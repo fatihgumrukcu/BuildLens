@@ -59,6 +59,8 @@ final class ArchivesViewModel {
 
     var hasIssues: Bool { !(summary?.issues.isEmpty ?? true) }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -74,7 +76,15 @@ final class ArchivesViewModel {
     }
 
     func rescan() async {
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let items = try await service.scanArchives()
+            let summary = ArchiveSummary.build(from: items)
+            scanState = .loaded(items, summary)
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }

@@ -8,6 +8,7 @@ struct EnvironmentDashboardView: View {
         VStack(spacing: 0) {
             EnvironmentSummaryHeader(
                 summary: summary,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } }
             )
             Divider()

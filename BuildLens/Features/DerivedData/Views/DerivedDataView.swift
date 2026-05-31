@@ -37,6 +37,7 @@ struct DerivedDataView: View {
             DerivedDataSummaryHeader(
                 totalSize: viewModel.totalSize,
                 itemCount: viewModel.items.count,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } }
             )
             .padding(AppSpacing.contentPadding)

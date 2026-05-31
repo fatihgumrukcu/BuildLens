@@ -8,6 +8,7 @@ struct NodeModulesDashboardView: View {
         VStack(spacing: 0) {
             NodeModulesSummaryHeader(
                 summary: summary,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } }
             )
             Divider()

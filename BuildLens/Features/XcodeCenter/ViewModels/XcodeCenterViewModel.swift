@@ -30,6 +30,8 @@ final class XcodeCenterViewModel {
         return false
     }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func load() async {
@@ -44,7 +46,14 @@ final class XcodeCenterViewModel {
     }
 
     func reload() async {
-        scanState = .idle
-        await load()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let result = try await service.generateSummary()
+            scanState = .loaded(result)
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }

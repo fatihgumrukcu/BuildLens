@@ -10,6 +10,7 @@ struct WorkspaceDashboardView: View {
         VStack(spacing: 0) {
             WorkspaceSummaryHeader(
                 summary: summary,
+                isRescanning: viewModel.isRescanning,
                 onRescan: { Task { await viewModel.rescan() } }
             )
             Divider()

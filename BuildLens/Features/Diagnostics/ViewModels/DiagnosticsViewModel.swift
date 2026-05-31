@@ -42,6 +42,8 @@ final class DiagnosticsViewModel {
 
     var hasActiveFilter: Bool { selectedCategory != nil }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -56,7 +58,14 @@ final class DiagnosticsViewModel {
     }
 
     func rescan() async {
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let result = try await service.generateReport()
+            scanState = .loaded(result)
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }

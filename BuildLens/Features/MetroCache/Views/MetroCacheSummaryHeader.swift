@@ -3,6 +3,7 @@ import SwiftUI
 struct MetroCacheSummaryHeader: View {
     let summary: MetroCacheSummary
     let entryCount: Int
+    let isRescanning: Bool
     let onRescan: () -> Void
 
     var body: some View {
@@ -37,9 +38,14 @@ struct MetroCacheSummaryHeader: View {
             Spacer()
 
             Button(action: onRescan) {
-                Label("Rescan", systemImage: "arrow.clockwise")
+                if isRescanning {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Label("Rescan", systemImage: "arrow.clockwise")
+                }
             }
             .buttonStyle(.bordered)
+            .disabled(isRescanning)
         }
         .padding(AppSpacing.contentPadding)
         .background(Color.appBackground)

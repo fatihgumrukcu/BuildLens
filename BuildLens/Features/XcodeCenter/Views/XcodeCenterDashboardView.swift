@@ -8,6 +8,7 @@ struct XcodeCenterDashboardView: View {
         VStack(spacing: 0) {
             XcodeInfrastructureHeader(
                 summary: summary,
+                isRescanning: viewModel.isRescanning,
                 onReload: { Task { await viewModel.reload() } }
             )
             Divider()

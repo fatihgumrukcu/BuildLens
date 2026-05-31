@@ -53,6 +53,8 @@ final class MetroCacheViewModel {
     var totalEntries: Int { entries.count }
     var hasIssues: Bool { !(summary?.issues.isEmpty ?? true) }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -68,7 +70,15 @@ final class MetroCacheViewModel {
     }
 
     func rescan() async {
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let results = try await service.scanEntries()
+            let summary = MetroCacheSummary.build(from: results)
+            scanState = .loaded(results, summary)
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }

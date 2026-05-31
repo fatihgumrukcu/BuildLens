@@ -2,6 +2,7 @@ import SwiftUI
 
 struct XcodeInfrastructureHeader: View {
     let summary: XcodeInfrastructureSummary
+    let isRescanning: Bool
     let onReload: () -> Void
 
     var body: some View {
@@ -47,9 +48,14 @@ struct XcodeInfrastructureHeader: View {
             }
 
             Button(action: onReload) {
-                Label("Reload", systemImage: "arrow.clockwise")
+                if isRescanning {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Label("Reload", systemImage: "arrow.clockwise")
+                }
             }
             .buttonStyle(.bordered)
+            .disabled(isRescanning)
         }
         .padding(AppSpacing.contentPadding)
         .background(Color.appBackground)

@@ -34,6 +34,8 @@ final class DerivedDataViewModel {
         self.init(fileSystem: FileSystemService())
     }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -53,8 +55,16 @@ final class DerivedDataViewModel {
     }
 
     func rescan() async {
-        items = []
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let raw = try await fileSystem.scanDirectory(at: FileSystemService.derivedDataPath)
+            let mapped = raw.map(DerivedDataItem.init(from:))
+            items = mapped
+            scanState = mapped.isEmpty ? .empty : .loaded
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }

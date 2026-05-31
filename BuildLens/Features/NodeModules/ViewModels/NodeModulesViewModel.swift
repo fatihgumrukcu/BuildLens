@@ -74,6 +74,8 @@ final class NodeModulesViewModel {
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -89,7 +91,15 @@ final class NodeModulesViewModel {
     }
 
     func rescan() async {
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let results = try await service.scanProjects()
+            let summary = NodeModulesSummary.build(from: results)
+            scanState = .loaded(results, summary)
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }

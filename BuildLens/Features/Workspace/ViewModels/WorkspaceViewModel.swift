@@ -84,6 +84,8 @@ final class WorkspaceViewModel {
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
+    private(set) var isRescanning = false
+
     // MARK: - Actions
 
     func scan() async {
@@ -99,8 +101,16 @@ final class WorkspaceViewModel {
     }
 
     func rescan() async {
-        scanState = .idle
-        await scan()
+        guard !isRescanning else { return }
+        isRescanning = true
+        defer { isRescanning = false }
+        do {
+            let projects = try await service.scanProjects()
+            let summary  = WorkspaceSummary.build(from: projects)
+            scanState = .loaded(projects, summary)
+        } catch {
+            scanState = .error(error.localizedDescription)
+        }
     }
 }
 
